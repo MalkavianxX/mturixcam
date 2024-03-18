@@ -1,37 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'login/base/base.html' %}{% load static %}
 
-<head>
-    {% load static %}
+{% block title %}
+<title>Turixcam - Huauchinango - Desfile </title>
+{% endblock %}
 
-    <title>Turixcam - Inicia sesión</title>
+{% block description %}
+<!-- Meta Tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="Webestica.com">
+<meta name="description" content="Turixcam - Camras en vivo">
+{% endblock %}
 
-    <!-- Meta Tags -->
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="author" content="Turixcam.com" />
-    <meta name="description" content="Accede a muchos lugares turisticos en directo." />
+{% block content %}
 
-    <!-- Dark mode -->
-    <script>
- 
-    </script>
 
-    <!-- Favicon -->
-    <link rel="shortcut icon" href="{% static 'login/assets/images/favicon.ico' %}" />
-
-    <!-- Google Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Poppins:wght@400;500;700&display=swap" />
-
-    <link rel="stylesheet" type="text/css" href="{% static 'login/assets/vendor/font-awesome/css/all.min.css' %} " />
-    <link rel="stylesheet" type="text/css"
-        href="{% static 'login/assets/vendor/bootstrap-icons/bootstrap-icons.css' %} " />
-
-    <!-- Theme CSS -->
-    <link rel="stylesheet" type="text/css" href="{% static 'login/assets/css/style.css' %} " />
     <style>
             body {
         background-image: url("https://turixcam-images.b-cdn.net/HUAUCHINANGO.png");
@@ -41,9 +24,8 @@
 
     }
     </style>
-</head>
 
-<body>
+
     <!-- **************** MAIN CONTENT START **************** -->
     <main>
         <!-- =======================
@@ -135,14 +117,8 @@ Main Content END -->
     </main>
     <!-- **************** MAIN CONTENT END **************** -->
 
-    <!-- Back to top -->
     <div class="back-top"></div>
 
-    <!-- Bootstrap JS -->
-    <script src="{% static 'assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %} "></script>
-
-    <!-- ThemeFunctions -->
-    <script src="{% static 'login/assets/js/functions.js'%} "></script>
     <script>
             function getCSRFToken() {
     const name = 'csrftoken=';
@@ -188,6 +164,5 @@ Main Content END -->
 });
 
     </script>
-</body>
 
-</html>
+{% endblock %}

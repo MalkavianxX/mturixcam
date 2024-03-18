@@ -20251,10 +20251,10 @@ body.dashboard main {
 }
 
 .navbar-mobile {
-  display: none;
+  display: block !important;
 }
 
-@media (max-width: 575.98px) {
+
   .navbar-mobile {
     display: block;
     background-color: var(--bs-mode);
@@ -20297,7 +20297,7 @@ body.dashboard main {
     font-size: 0.6em;
     display: block;
   }
-}
+
 @media (max-width: 575.98px) {
   .has-navbar-mobile footer {
     padding-bottom: 4rem !important;
