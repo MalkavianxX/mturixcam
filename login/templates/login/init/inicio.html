@@ -138,11 +138,11 @@
         }
 
         .titulo-sm {
-            font-size: -webkit-xxx-large;
+            font-size: 2.5rem;
         }
 
         .logo-sm {
-            width: 100% !important;
+            width: 80% !important;
         }
     }
 
@@ -182,8 +182,109 @@
         let img = document.getElementById('globo_init');
         img.style.transition = 'transform 0.5s ease-out';
 
+        var shiftX, shiftY;
+        var lastX, lastY;
+        var isDragging = false;
+        var isGrowing = false;
+        var growAnimation;
+        var countxplote = 0;
         // Agrega un contador de clics a tu imagen
         let clickCount = 0;
+
+        function start(event) {
+            event.preventDefault();
+            var clientX = event.pageX || event.touches[0].pageX;
+            var clientY = event.pageY || event.touches[0].pageY;
+
+            shiftX = clientX - img.getBoundingClientRect().left;
+            shiftY = clientY - img.getBoundingClientRect().top;
+
+            img.style.position = 'absolute';
+            img.style.zIndex = 1000;
+            document.body.append(img);
+            moveAt(clientX, clientY);
+
+            lastX = clientX;
+            lastY = clientY;
+            isDragging = true;
+
+            // Iniciar la animación de crecimiento
+            isGrowing = true;
+            growAnimation = anime({
+                targets: img,
+                scale: 1.25, // Crecer hasta un 25%
+                duration: 2000, // Duración de 2 segundos
+                begin: function () {
+                    if (!isGrowing) {
+                        growAnimation.pause();
+                    }
+                },
+                complete: function () {
+                    if (isGrowing) {
+                        countxplote++;
+                        // Si la imagen todavía está creciendo después de 2 segundos, "explotar"
+                        anime({
+                            targets: img,
+                            scale: 1.25, // Aumentar el tamaño al doble
+                            opacity: 0, // Desvanecer
+                            duration: 500, // Duración de 0.5 segundos
+                            easing: 'easeOutCubic',
+                            complete: function () {
+                                console.log(countxplote)
+                                // Restablecer la imagen después de la "explosión"
+                                img.style.opacity = 1; // Restablecer la opacidad
+                                if (countxplote === 1) {
+                                    img.src = imgs[1].src;
+                                } else if (countxplote === 2) {
+                                    img.src = imgs[2].src;
+                                } else if (countxplote === 3) {
+                                    img.src = imgs[0].src;
+                                    countxplote = 0;  // Reinicia el contador de explosiones
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+        function move(event) {
+            var pageX = event.pageX || event.touches[0].pageX;
+            var pageY = event.pageY || event.touches[0].pageY;
+            moveAt(pageX, pageY);
+            lastX = pageX;
+            lastY = pageY;
+        }
+
+        function end() {
+            document.removeEventListener('mousemove', move);
+            document.removeEventListener('touchmove', move);
+            img.onmouseup = null;
+            img.ontouchend = null;
+            isDragging = false;
+
+            // Detener la animación de crecimiento
+            isGrowing = false;
+        }
+
+        function moveAt(pageX, pageY) {
+            img.style.left = pageX - shiftX + 'px';
+            img.style.top = pageY - shiftY + 'px';
+        }
+
+        img.addEventListener('mousedown', start);
+        img.addEventListener('touchstart', start);
+
+        document.addEventListener('mousemove', move);
+        document.addEventListener('touchmove', move);
+
+        img.addEventListener('mouseup', end);
+        img.addEventListener('touchend', end);
+
+        img.ondragstart = function () {
+            return false;
+        };
+
         img.onclick = function () {
             clickCount++;
 
@@ -209,115 +310,26 @@
             }
         }
     }
+
     window.onscroll = function () {
-    let img = document.getElementById('globo_init');
-    let y = window.scrollY;
-    let x = (window.innerWidth / window.innerHeight) * 0.55 * y;
-    let x_p = window.innerWidth;
-    let y_p = window.innerHeight;
+        let img = document.getElementById('globo_init');
+        let y = window.scrollY;
+        let x = (window.innerWidth / window.innerHeight) * 0.55 * y;
+        let x_p = window.innerWidth;
+        let y_p = window.innerHeight;
 
-    // Define un tamaño de pantalla mediano en píxeles (ajusta este valor según tus necesidades)
-
-    img.style.transform = 'translate(0px,' + y + 'px)';
-
-
-}
-
-
-</script>
-
-<script>
-    document.addEventListener("DOMContentLoaded", (event) => {
-
-        var img = document.getElementById('globo_init');
-var shiftX, shiftY;
-var lastX, lastY;
-var isDragging = false;
-var isGrowing = false;
-var growAnimation;
-
-img.onmousedown = function(event) {
-  event.preventDefault();
-
-  shiftX = event.clientX - img.getBoundingClientRect().left;
-  shiftY = event.clientY - img.getBoundingClientRect().top;
-
-  img.style.position = 'absolute';
-  img.style.zIndex = 1000;
-  document.body.append(img);
-  moveAt(event.pageX, event.pageY);
-
-  lastX = event.pageX;
-  lastY = event.pageY;
-  isDragging = true;
-
-  // Iniciar la animación de crecimiento
-  isGrowing = true;
-  growAnimation = anime({
-    targets: img,
-    scale: 1.25, // Crecer hasta un 25%
-    duration: 2000, // Duración de 2 segundos
-    begin: function() {
-      if (!isGrowing) {
-        growAnimation.pause();
-      }
-    },
-    complete: function() {
-      if (isGrowing) {
-        // Si la imagen todavía está creciendo después de 2 segundos, "explotar"
-        anime({
-          targets: img,
-          scale: 2, // Aumentar el tamaño al doble
-          opacity: 0, // Desvanecer
-          duration: 500, // Duración de 0.5 segundos
-          easing: 'easeOutCubic',
-          complete: function() {
-            // Pasar a la siguiente imagen...
-          }
-        });
-      }
+        img.style.transform = 'translate(0px,' + y + 'px)';
     }
-  });
-
-  function moveAt(pageX, pageY) {
-    img.style.left = pageX - shiftX + 'px';
-    img.style.top = pageY - shiftY + 'px';
-  }
-
-  document.addEventListener('mousemove', onMouseMove);
-
-  img.onmouseup = function() {
-    document.removeEventListener('mousemove', onMouseMove);
-    img.onmouseup = null;
-    isDragging = false;
-
-    // Detener la animación de crecimiento
-    isGrowing = false;
-  };
-
-  function onMouseMove(event) {
-    moveAt(event.pageX, event.pageY);
-    lastX = event.pageX;
-    lastY = event.pageY;
-  }
-};
-
-img.ondragstart = function() {
-  return false;
-};
-
-
-
-    })
 
 </script>
+
+
 
 <main>
 
 
-    <section class=" d-flex justify-content-center align-items-center mt-xl-0 mt-5 "
-        style="height: 80vh; margin-bottom: 10vh;">
-        <div class="container sep-sm-6">
+    <section class=" d-flex justify-content-center align-items-center  " style="height: 80vh;">
+        <div class="container ">
             <!-- Content and Image START -->
             <div class="row ">
                 <!-- Content -->
@@ -333,8 +345,8 @@ img.ondragstart = function() {
 
                 <!-- Image -->
                 <div class="col-lg-5 icon_float_init z-0 position-relative text-center">
-                    <img style="filter: brightness(0.90);" id="globo_init" class="img-fluid"
-                        src="https://turixcam-images.b-cdn.net/Backgrounds/inicio/globo.png" alt="">
+                    <img style="filter: brightness(0.90); height: auto !important; max-width: 75% !important;"
+                        id="globo_init" src="https://turixcam-images.b-cdn.net/Backgrounds/inicio/globo.png" alt="">
 
                 </div>
             </div>
