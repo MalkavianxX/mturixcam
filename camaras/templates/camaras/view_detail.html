@@ -14,6 +14,7 @@
 
 {% block content %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
     body {
@@ -114,25 +115,38 @@
 </style>
 <!-- **************** MAIN CONTENT START **************** -->
 <script>
-    window.addEventListener('orientationchange', function() {
+ window.addEventListener('orientationchange', function() {
     var iframe = document.querySelector('iframe');
     if (window.orientation === 90 || window.orientation === -90) {
         // El dispositivo está en orientación horizontal
-        if (iframe.requestFullscreen) {
-            console.log('Usando requestFullscreen');
-            iframe.requestFullscreen();
-        } else if (iframe.mozRequestFullScreen) { // Firefox
-            console.log('Usando mozRequestFullScreen');
-            iframe.mozRequestFullScreen();
-        } else if (iframe.webkitRequestFullscreen) { // Chrome, Safari and Opera
-            console.log('Usando webkitRequestFullscreen');
-            iframe.webkitRequestFullscreen();
-        } else if (iframe.msRequestFullscreen) { // IE/Edge
-            console.log('Usando msRequestFullscreen');
-            iframe.msRequestFullscreen();
-        } else {
-            console.log('No se pudo poner el video en pantalla completa: no se soporta requestFullscreen');
-        }
+        Swal.fire({
+            title: '¿Permitir pantalla completa?',
+            text: 'Turixcam quiere mostrar el video en pantalla completa.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Permitir',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                setTimeout(function() {
+                    if (iframe.requestFullscreen) {
+                        console.log('Usando requestFullscreen');
+                        iframe.requestFullscreen();
+                    } else if (iframe.mozRequestFullScreen) { // Firefox
+                        console.log('Usando mozRequestFullScreen');
+                        iframe.mozRequestFullScreen();
+                    } else if (iframe.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                        console.log('Usando webkitRequestFullscreen');
+                        iframe.webkitRequestFullscreen();
+                    } else if (iframe.msRequestFullscreen) { // IE/Edge
+                        console.log('Usando msRequestFullscreen');
+                        iframe.msRequestFullscreen();
+                    } else {
+                        console.log('No se pudo poner el video en pantalla completa: no se soporta requestFullscreen');
+                    }
+                }, 1000); // Retrasa la ejecución del cambio a pantalla completa en 1 segundo
+            }
+        });
     } else {
         console.log('El dispositivo está en orientación vertical');
     }
@@ -151,11 +165,13 @@
                 <!-- Image -->
                 <div class="col-12 d-flex justify-content-center" id="videofixed" style="border-radius: 15px;">
                     <div class="ratio ratio-16x9">
-                        <iframe
-                                src="https://iframe.mediadelivery.net/embed/198966/40e6a199-a374-46cc-92d8-11ab0daacf56?autoplay=true&loop=false&muted=false&preload=true&responsive=true"
-                                loading="lazy" 
-                                allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;"
-                                allowfullscreen="true"></iframe>
+                        <iframe width="560" height="315"
+                            src="https://www.youtube.com/embed/WSXrxP5QNv8?autoplay=1&controls=0&modestbranding=1&rel=0&showinfo=0"
+                            title="YouTube video player" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen>
+                        </iframe>
+
 
                     </div>
                 </div>
