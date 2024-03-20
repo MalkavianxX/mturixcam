@@ -14,6 +14,7 @@
 
 {% block content %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 <style>
     .swiper {
         width: 100%;
@@ -107,92 +108,108 @@
         -webkit-text-fill-color: transparent;
         text-align: start;
     }
-    #globo_init{
+
+    #globo_init {
         cursor: pointer;
     }
+
     .mitad {
         background: linear-gradient(to bottom, rgba(213, 213, 213, 0.847) 50%, rgba(0, 0, 0, 0.55) 50%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
-    .sep-sm-6{
-        margin-top: unset;
-    }
-    .titulo-sm{
-        font-size: 3.7rem;
-    }
-    .logo-sm{
-        width: 50% !important;
-    }
-    @media screen and (max-width: 600px) {
 
     .sep-sm-6 {
-        margin-top: 11rem;
+        margin-top: unset;
     }
-    .titulo-sm{
-        font-size: -webkit-xxx-large;
-    }
-    .logo-sm{
-        width: 100% !important;
-    }
-}
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(0.95); }
-    100% { transform: scale(1); }
-}
 
-@keyframes explode {
-    /* Define tu animación de explosión aquí */
-}
+    .titulo-sm {
+        font-size: 3.7rem;
+    }
+
+    .logo-sm {
+        width: 50% !important;
+    }
+
+    @media screen and (max-width: 600px) {
+
+        .sep-sm-6 {
+            margin-top: 11rem;
+        }
+
+        .titulo-sm {
+            font-size: -webkit-xxx-large;
+        }
+
+        .logo-sm {
+            width: 100% !important;
+        }
+    }
+
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(0.95);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    @keyframes explode {
+        /* Define tu animación de explosión aquí */
+    }
 </style>
 
 <script>
-window.onload = function () {
-    // Precarga las imágenes
-    let imgUrls = [
-        "https://turixcam-images.b-cdn.net/Backgrounds/inicio/parapente2.png",
-        "https://turixcam-images.b-cdn.net/Backgrounds/inicio/parapente.png",
-        "https://turixcam-images.b-cdn.net/Backgrounds/inicio/globo.png"
-    ];
-    let imgs = imgUrls.map(function(url) {
-        let img = new Image();
-        img.src = url;
-        return img;
-    });
+    window.onload = function () {
+        // Precarga las imágenes
+        let imgUrls = [
+            "https://turixcam-images.b-cdn.net/Backgrounds/inicio/parapente2.png",
+            "https://turixcam-images.b-cdn.net/Backgrounds/inicio/parapente.png",
+            "https://turixcam-images.b-cdn.net/Backgrounds/inicio/globo.png"
+        ];
+        let imgs = imgUrls.map(function (url) {
+            let img = new Image();
+            img.src = url;
+            return img;
+        });
 
-    let img = document.getElementById('globo_init');
-    img.style.transition = 'transform 0.5s ease-out';
+        let img = document.getElementById('globo_init');
+        img.style.transition = 'transform 0.5s ease-out';
 
-    // Agrega un contador de clics a tu imagen
-    let clickCount = 0;
-    img.onclick = function () {
-        clickCount++;
+        // Agrega un contador de clics a tu imagen
+        let clickCount = 0;
+        img.onclick = function () {
+            clickCount++;
 
-        // Agrega una animación de pulsación
-        img.style.animation = 'pulse 0.2s ease-in-out';
-        setTimeout(function() {
-            img.style.animation = '';
-        }, 200);  // Elimina la animación después de 0.2 segundos
+            // Agrega una animación de pulsación
+            img.style.animation = 'pulse 0.2s ease-in-out';
+            setTimeout(function () {
+                img.style.animation = '';
+            }, 200);  // Elimina la animación después de 0.2 segundos
 
-        if (clickCount === 3) {
-            // Cambia la imagen a parapente y agrega un efecto de explosión
-            img.src = imgs[0].src;
-            img.style.animation = 'explode 0.5s ease-out';
-        } else if (clickCount === 6) {
-            // Cambia la imagen a parapente2 y agrega un efecto de explosión
-            img.src = imgs[1].src;
-            img.style.animation = 'explode 0.5s ease-out';
-        } else if (clickCount === 9) {
-            // Cambia la imagen a globo y agrega un efecto de explosión
-            img.src = imgs[2].src;
-            img.style.animation = 'explode 0.5s ease-out';
-            clickCount = 0;  // Reinicia el contador de clics
+            if (clickCount === 3) {
+                // Cambia la imagen a parapente y agrega un efecto de explosión
+                img.src = imgs[0].src;
+                img.style.animation = 'explode 0.5s ease-out';
+            } else if (clickCount === 6) {
+                // Cambia la imagen a parapente2 y agrega un efecto de explosión
+                img.src = imgs[1].src;
+                img.style.animation = 'explode 0.5s ease-out';
+            } else if (clickCount === 9) {
+                // Cambia la imagen a globo y agrega un efecto de explosión
+                img.src = imgs[2].src;
+                img.style.animation = 'explode 0.5s ease-out';
+                clickCount = 0;  // Reinicia el contador de clics
+            }
         }
     }
-}
-
-window.onscroll = function () {
+    window.onscroll = function () {
     let img = document.getElementById('globo_init');
     let y = window.scrollY;
     let x = (window.innerWidth / window.innerHeight) * 0.55 * y;
@@ -209,10 +226,97 @@ window.onscroll = function () {
 
 </script>
 
+<script>
+    document.addEventListener("DOMContentLoaded", (event) => {
+
+        var img = document.getElementById('globo_init');
+var shiftX, shiftY;
+var lastX, lastY;
+var isDragging = false;
+var isGrowing = false;
+var growAnimation;
+
+img.onmousedown = function(event) {
+  event.preventDefault();
+
+  shiftX = event.clientX - img.getBoundingClientRect().left;
+  shiftY = event.clientY - img.getBoundingClientRect().top;
+
+  img.style.position = 'absolute';
+  img.style.zIndex = 1000;
+  document.body.append(img);
+  moveAt(event.pageX, event.pageY);
+
+  lastX = event.pageX;
+  lastY = event.pageY;
+  isDragging = true;
+
+  // Iniciar la animación de crecimiento
+  isGrowing = true;
+  growAnimation = anime({
+    targets: img,
+    scale: 1.25, // Crecer hasta un 25%
+    duration: 2000, // Duración de 2 segundos
+    begin: function() {
+      if (!isGrowing) {
+        growAnimation.pause();
+      }
+    },
+    complete: function() {
+      if (isGrowing) {
+        // Si la imagen todavía está creciendo después de 2 segundos, "explotar"
+        anime({
+          targets: img,
+          scale: 2, // Aumentar el tamaño al doble
+          opacity: 0, // Desvanecer
+          duration: 500, // Duración de 0.5 segundos
+          easing: 'easeOutCubic',
+          complete: function() {
+            // Pasar a la siguiente imagen...
+          }
+        });
+      }
+    }
+  });
+
+  function moveAt(pageX, pageY) {
+    img.style.left = pageX - shiftX + 'px';
+    img.style.top = pageY - shiftY + 'px';
+  }
+
+  document.addEventListener('mousemove', onMouseMove);
+
+  img.onmouseup = function() {
+    document.removeEventListener('mousemove', onMouseMove);
+    img.onmouseup = null;
+    isDragging = false;
+
+    // Detener la animación de crecimiento
+    isGrowing = false;
+  };
+
+  function onMouseMove(event) {
+    moveAt(event.pageX, event.pageY);
+    lastX = event.pageX;
+    lastY = event.pageY;
+  }
+};
+
+img.ondragstart = function() {
+  return false;
+};
+
+
+
+    })
+
+</script>
+
 <main>
 
 
-    <section class=" d-flex justify-content-center align-items-center mt-xl-0 mt-5 " style="height: 80vh; margin-bottom: 10vh;">
+    <section class=" d-flex justify-content-center align-items-center mt-xl-0 mt-5 "
+        style="height: 80vh; margin-bottom: 10vh;">
         <div class="container sep-sm-6">
             <!-- Content and Image START -->
             <div class="row ">
@@ -220,8 +324,8 @@ window.onscroll = function () {
                 <div class="col-lg-7 align-self-start justify-content-center text-center  ">
                     <!-- Title -->
 
-                    <img  src="{% static 'login/assets/images/logo.png' %} " class="img-fluid logo-sm" alt="">
-                    <h1  style=" color: white;text-shadow: -1px 0 #a097958e, 0 1px #a097958e, 1px 0 #a097958e, 0 -1px #a097958e;"
+                    <img src="{% static 'login/assets/images/logo.png' %} " class="img-fluid logo-sm" alt="">
+                    <h1 style=" color: white;text-shadow: -1px 0 #a097958e, 0 1px #a097958e, 1px 0 #a097958e, 0 -1px #a097958e;"
                         class="fw-bold titulo-sm">México, como nunca lo habias visto</h1>
                     <br>
                     <button type="button" class="mt-lg-0 mt-3 btn btn_inicio btn-outline-light">Explorar</button>
@@ -240,13 +344,13 @@ window.onscroll = function () {
         </div>
     </section>
 
-<br>
-    <section >
-        <div class="container-fluid" >
+    <br>
+    <section>
+        <div class="container-fluid">
             <h1 class="ms-5 titulo-trans d-xl-flex d-none" style="font-size: 8rem;">Los mejores lugares</h1>
             <h1 class=" titulo-trans text-center d-xl-none d-flex" style="font-size: 9vh;"> Luagres favoritos</h1>
 
-            <div class="swiper mySwiper" >
+            <div class="swiper mySwiper">
                 <div class="swiper-wrapper">
                     <div class="swiper-slide">
                         <div class="card card-img-scale overflow-hidden bg-transparent">
@@ -300,7 +404,7 @@ window.onscroll = function () {
 
         <h1 class=" titulo-trans text-center d-xl-none  d-flex z-3" style="font-size: 9vh; z-index: 2;"> SIEMPRE EN VIVO
         </h1>
- 
+
         <div class="container-fluid mt-5 " style="position: relative; z-index: 2;">
 
             <div class="row d-flex justify-content-start" style="margin-top: 10vh; margin-bottom: 10vh;">
@@ -370,7 +474,10 @@ window.onscroll = function () {
 
 
 
+    <script>
 
+
+    </script>
     <!-- =======================
 Featured Hotels END -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
