@@ -26,14 +26,6 @@
         background-size: cover;
     }
 
-    #myVideo {
-        position: fixed;
-        right: 0;
-        bottom: 0;
-        min-width: 100%;
-        min-height: 100%;
-        z-index: 0 !important;
-    }
 
     header {
         background-color: rgba(0, 0, 0, 0.164) !important;
@@ -115,42 +107,7 @@
 </style>
 <!-- **************** MAIN CONTENT START **************** -->
 <script>
- window.addEventListener('orientationchange', function() {
-    var iframe = document.querySelector('iframe');
-    if (window.orientation === 90 || window.orientation === -90) {
-        // El dispositivo está en orientación horizontal
-        Swal.fire({
-            title: '¿Permitir pantalla completa?',
-            text: 'Turixcam quiere mostrar el video en pantalla completa.',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Permitir',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                setTimeout(function() {
-                    if (iframe.requestFullscreen) {
-                        console.log('Usando requestFullscreen');
-                        iframe.requestFullscreen();
-                    } else if (iframe.mozRequestFullScreen) { // Firefox
-                        console.log('Usando mozRequestFullScreen');
-                        iframe.mozRequestFullScreen();
-                    } else if (iframe.webkitRequestFullscreen) { // Chrome, Safari and Opera
-                        console.log('Usando webkitRequestFullscreen');
-                        iframe.webkitRequestFullscreen();
-                    } else if (iframe.msRequestFullscreen) { // IE/Edge
-                        console.log('Usando msRequestFullscreen');
-                        iframe.msRequestFullscreen();
-                    } else {
-                        console.log('No se pudo poner el video en pantalla completa: no se soporta requestFullscreen');
-                    }
-                }, 1000); // Retrasa la ejecución del cambio a pantalla completa en 1 segundo
-            }
-        });
-    } else {
-        console.log('El dispositivo está en orientación vertical');
-    }
-});
+
 
 </script>
 <main>
@@ -166,7 +123,7 @@
                 <div class="col-12 d-flex justify-content-center" id="videofixed" style="border-radius: 15px;">
                     <div class="ratio ratio-16x9">
                         <iframe width="560" height="315"
-                            src="https://www.youtube.com/embed/WSXrxP5QNv8?autoplay=1&controls=1&modestbranding=1&rel=0&showinfo=0"
+                            src="https://www.youtube.com/embed/QPoXSIuSUzU?autoplay=1&controls=1&modestbranding=1&rel=0&showinfo=0"
                             title="YouTube video player" frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             allowfullscreen>
