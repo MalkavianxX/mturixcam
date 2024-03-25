@@ -14,7 +14,8 @@ urlpatterns = [
 
     path('teco',views.teco, name='teco'),
     path('apan',views.apan, name='apan'),
-
+    path('oaxaca',views.oaxaca, name='oaxaca'),
+    
     #funciones jsonresponse
     path('addFavorite',views.addFavorite, name='addFavorite'),
     path('addGuardado',views.addGuardado, name='addGuardado'),

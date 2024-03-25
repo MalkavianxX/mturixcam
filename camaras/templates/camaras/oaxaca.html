@@ -1,0 +1,505 @@
+{% extends 'login/base/base.html' %}{% load static %}
+
+{% block title %}
+<title>Turixcam - Camaras en vivo </title>
+{% endblock %}
+
+{% block description %}
+<!-- Meta Tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="Webestica.com">
+<meta name="description" content="Turixcam - Camras en vivo">
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+    body {
+        margin: 0;
+        height: 100%;
+        background-image: url("https://turixcam-images.b-cdn.net/hidalgo/fondo-apana-grande.jpg");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+    }
+
+
+    header {
+        background-color: rgba(0, 0, 0, 0.164) !important;
+    }
+
+    .titulo-trans {
+
+        background: -webkit-linear-gradient(left, lightgreen, skyblue, orange, red);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-align: start;
+        font-size: 5rem;
+    }
+
+    .nav-control-letra {
+        color: white !important;
+    }
+
+    .navbar-mobile-control {
+        background-color: rgba(255, 255, 255, 0.807) !important;
+    }
+
+    .swiper {
+        width: 100%;
+        height: 100%;
+    }
+
+    .swiper-slide {
+        text-align: center;
+        font-size: 18px;
+        background: transparent;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .swiper-slide img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .titulo-trans {
+
+        background: -webkit-linear-gradient(Bottom, rgba(213, 213, 213, 0.847), rgba(255, 255, 255, 0.841));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-align: start;
+    }
+
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.2);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        color: white !important;
+    }
+
+    #videofixed {
+        position: fixed !important;
+        z-index: 1080;
+    }
+
+    #loader {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        color: #fd7e14;
+    }
+</style>
+<!-- **************** MAIN CONTENT START **************** -->
+<script>
+    window.addEventListener('load', function () {
+        var loader = document.getElementById('loader');
+        loader.style.display = 'none';
+    });
+
+    var swiper = new Swiper(".mySwiper", {
+        slidesPerView: 1,
+        spaceBetween: 30,
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+        },
+
+    });
+    var swipermore = new Swiper(".mySwipermore", {
+        effect: "coverflow",
+        grabCursor: true,
+        centeredSlides: true,
+        coverflowEffect: {
+            rotate: 50,
+            stretch: 0,
+            depth: 100,
+            modifier: 1,
+            slideShadows: true,
+        },
+        pagination: {
+            el: ".swiper-pagination",
+        },
+        breakpoints: {
+            640: {
+                slidesPerView: 1,
+                spaceBetween: 20
+            },
+            768: {
+                slidesPerView: 3,
+                spaceBetween: 30
+            }
+        }
+    });
+
+    function getCSRFToken() {
+        const name = 'csrftoken=';
+        const decodedCookie = decodeURIComponent(document.cookie);
+        const cookieArray = decodedCookie.split(';');
+
+        for (let i = 0; i < cookieArray.length; i++) {
+            let cookie = cookieArray[i].trim();
+            if (cookie.indexOf(name) === 0) {
+                return cookie.substring(name.length, cookie.length);
+            }
+        }
+
+        return null;
+    }
+
+
+    document.getElementById('comen_btn').addEventListener('click', function (e) {
+        e.preventDefault();
+
+        var lugar = 4
+        var text = document.getElementById('comen_text').value;
+        var inputcoment = document.getElementById('comen_text');
+        var puntuacion = document.getElementById('comen_calificacion').value;
+        const token = getCSRFToken();
+        var formData = new FormData();
+        formData.append('id_lugar', lugar);
+        formData.append('text', text);
+        formData.append('puntuacion', puntuacion);
+
+        fetch('addComentario', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': token,
+            },
+            body: formData,
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                // Crear un nuevo elemento de comentario
+                inputcoment.value = "";
+                var newComment = document.createElement('div');
+                newComment.innerHTML = `
+            <div class="d-md-flex my-4 w-100 mb-3">
+                <div class="mt-3 ms-2 avatar avatar-lg me-3 flex-shrink-0">
+                    <img class="avatar-img rounded-circle" loading="lazy" src="${data.comentario.user.avatar_url}" alt="avatar">
+                </div>
+                <div class="w-100 mt-3 ms-2">
+                    <div class="d-flex justify-content-between mt-1 mt-md-0">
+                        <div class="">
+                            <h6 class="me-3 mb-0">${data.comentario.user.first_name}</h6>
+                            <ul class="nav nav-divider small mb-2">
+                                <li class="nav-item">${data.comentario.fecha}</li>
+                            </ul>
+                        </div>
+                        <div class="icon-md rounded text-bg-warning fs-6">${data.comentario.puntuacion}</div>
+                    </div>
+                    <p class="mb-2 text-light">${data.comentario.text}</p>
+                </div>
+            </div>
+            <hr class="mb-3">
+            <div class="mb-3"></div>
+        `;
+                // Agregar el nuevo comentario al contenedor de comentarios
+                document.getElementById('container-comentarios').appendChild(newComment);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+
+    });
+
+</script>
+
+
+<div id="loader">
+    <img src="https://turixcam-images.b-cdn.net/temporales/spinner.gif" alt="Cargando..." />
+</div>
+
+
+<main>
+    {% csrf_token %}
+
+
+
+
+
+    <section class="pt-0">
+        <div class="container " style="background-color: rgba(0, 0, 0, 0.399);">
+
+            <div class="row g-4 g-xl-5">
+                <!-- Content START -->
+                <div class="col-xl-7 order-1">
+                    <div class="vstack gap-5">
+
+                        <!-- About hotel START -->
+                        <div class="card bg-transparent">
+                            <!-- Card header -->
+                            <div class="card-header border-bottom bg-transparent px-0 pt-0">
+                                <h3 class="mb-0">Acerca de este lugar</h3>
+                            </div>
+
+                            <!-- Card body START -->
+                            <div class="card-body pt-4 p-0">
+                                <h5 class="fw-light mb-4">Principales caracteristicas</h5>
+
+                                <!-- Highlights Icons -->
+                                <div class="hstack gap-3 mb-3">
+                                    <div class="icon-lg bg-success h5 rounded-2" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="Free wifi">
+                                        <i class="fa-solid fa-wifi"></i>
+                                    </div>
+                                    <div class="icon-lg bg-info h5 rounded-2" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="Swimming Pool">
+                                        <i class="fa-solid fa-swimming-pool"></i>
+                                    </div>
+                                    <div class="icon-lg text-light h5 rounded-2" style="background-color: #fd7e14;"
+                                        data-bs-toggle="tooltip" data-bs-placement="top" title="Central AC">
+                                        <i class="fa-solid fa-snowflake"></i>
+                                    </div>
+                                    <div class="icon-lg bg-danger h5 rounded-2" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="Free Service">
+                                        <i class="fa-solid fa-concierge-bell"></i>
+                                    </div>
+                                </div>
+
+                                <p class="mb-3 text-light"> Huatulco es un destino maravilloso que ofrece una amplia
+                                    gama de actividades y experiencias para todos los gustos. Ya sea que prefieras
+                                    relajarte en la playa, explorar la naturaleza, sumergirte en la cultura local o
+                                    simplemente disfrutar de la deliciosa comida, Huatulco tiene algo para ofrecer a
+                                    todos los visitantes.</p>
+
+                                <div class="collapse" id="collapseContent">
+                                    <p class="my-3 text-light">Huatulco es un destino maravilloso que ofrece una amplia
+                                        gama de actividades y experiencias para todos los gustos. Ya sea que prefieras
+                                        relajarte en la playa, explorar la naturaleza, sumergirte en la cultura local o
+                                        simplemente disfrutar de la deliciosa comida, Huatulco tiene algo para ofrecer a
+                                        todos los visitantes.
+                                    </p>
+                                </div>
+                                <a class="p-0 mb-4 mt-2 btn-more text-light d-flex align-items-center collapsed"
+                                    data-bs-toggle="collapse" href="#collapseContent" role="button"
+                                    aria-expanded="false" aria-controls="collapseContent">
+                                    Ver <span class="see-more ms-1">más</span><span class="see-less ms-1">menos</span><i
+                                        class="fa-solid fa-angle-down ms-2"></i>
+                                </a>
+
+                                <!-- List -->
+                                <h5 class="fw-light mb-2">Etiquetas</h5>
+                                <ul class="list-group list-group-borderless mb-0">
+                                    <li class="list-group-item text-light h6 fw-light d-flex mb-0"><i
+                                            class="bi bi-patch-check-fill text-success me-2"></i> Huatulco es famoso por
+                                        sus nueve bahías y 36 playas de gran belleza2. Las aguas son ideales para nadar,
+                                        bucear y practicar deportes acuáticos1.</li>
+                                    <li class="list-group-item text-light h6 fw-light d-flex mb-0"><i
+                                            class="bi bi-patch-check-fill text-info me-2"></i> Hay muchas cosas que
+                                        hacer en Huatulco, desde tomar un paseo en Jet Ski por las bahías, hasta
+                                        descubrir cómo se pinta la lana en el Centro Textil Artesanal
+                                    </li>
+                                    <li class="list-group-item  h6 fw-light d-flex mb-0"><i
+                                            class="bi bi-patch-check-fill  me-2" style="color: #fd7e14;"></i>La ciudad
+                                        también cuenta con una serie de restaurantes donde se pueden degustar platos
+                                        locales.</li>
+                                    <li class="list-group-item text-light h6 fw-light d-flex mb-0"><i
+                                            class="bi bi-patch-check-fill text-danger me-2 "></i> Huatulco es un hermoso
+                                        destino turístico en el estado de Oaxaca, México </li>
+                                </ul>
+                            </div>
+                            <!-- Card body END -->
+                        </div>
+                        <!-- About hotel START -->
+
+
+
+                        <div class="card bg-transparent">
+                            <!-- Card header -->
+                            <div class="card-header border-bottom bg-transparent px-0 pt-0">
+                                <h3 class="card-title mb-0">Comentarios</h3>
+                            </div>
+
+                            <!-- Card body START -->
+                            <div class="card-body pt-4 p-0">
+                                <!-- Progress bar and rating START -->
+                                <div class="card bg-light p-4 mb-4">
+                                    <div class="row g-4 align-items-center">
+                                        <!-- Rating info -->
+                                        <div class="col-md-4">
+                                            <div class="text-center">
+                                                <!-- Info -->
+                                                <p class="fs-2 mb-0">{{media}}</p>
+                                                <p class="mb-2">Basada en {{total_comentarios}} comentarios</p>
+                                                <!-- Star -->
+                                                <ul class="list-inline mb-0">
+                                                    <li class="list-inline-item me-0"><i
+                                                            class="fa-solid fa-star text-warning"></i></li>
+                                                    <li class="list-inline-item me-0"><i
+                                                            class="fa-solid fa-star text-warning"></i></li>
+                                                    <li class="list-inline-item me-0"><i
+                                                            class="fa-solid fa-star text-warning"></i></li>
+                                                    <li class="list-inline-item me-0"><i
+                                                            class="fa-solid fa-star text-warning"></i></li>
+                                                    <li class="list-inline-item me-0"><i
+                                                            class="fa-solid fa-star-half-alt text-warning"></i></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+
+                                        <!-- Progress-bar START -->
+                                        <div class="col-md-8">
+                                            <div class="card-body p-0">
+                                                <div class="row gx-3 g-2 align-items-center">
+                                                    {% for puntuacion, datos in puntuaciones.items %}
+
+                                                    <!-- Progress bar and Rating -->
+                                                    <div class="col-9 col-sm-10">
+                                                        <!-- Progress item -->
+                                                        <div class="progress progress-sm bg-warning bg-opacity-15">
+                                                            <div class="progress-bar bg-warning" role="progressbar"
+                                                                style="width: {{datos.percentage}}%"
+                                                                aria-valuenow="{{datos.percentage}}" aria-valuemin="0"
+                                                                aria-valuemax="100">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Percentage -->
+                                                    <div class="col-3 col-sm-2 text-end">
+                                                        <span class="h6 fw-light mb-0">{{datos.percentage}}%</span>
+                                                    </div>
+                                                    {% endfor %}
+
+                                                </div> <!-- Row END -->
+                                            </div>
+                                        </div>
+                                        <!-- Progress-bar END -->
+
+                                    </div>
+                                </div>
+                                <!-- Progress bar and rating END -->
+
+                                <!-- Leave review START -->
+                                <form class="mb-5" id="comen_form">
+                                    <!-- Rating -->
+                                    <div class="form-control-bg-light mb-3">
+                                        <select class="form-select js-choice" id="comen_calificacion">
+                                            <option value="5" selected="">★★★★★ (5/5)</option>
+                                            <option value="4">★★★★☆ (4/5)</option>
+                                            <option value="3">★★★☆☆ (3/5)</option>
+                                            <option value="2">★★☆☆☆ (2/5)</option>
+                                            <option value="1">★☆☆☆☆ (1/5)</option>
+                                        </select>
+                                    </div>
+                                    <!-- Message -->
+
+                                    <div class="form-control-bg-light mb-3">
+                                        <textarea class="form-control" id="comen_text"
+                                            placeholder="Este lugar me parece ..." rows="3"></textarea>
+                                    </div>
+                                    <!-- Button -->
+                                    <button type="button" id="comen_btn" class="btn btn-lg btn-info mb-0">Comentar <i
+                                            class="bi fa-fw bi-arrow-right ms-2"></i></button>
+
+                                </form>
+                                <!-- Leave review END -->
+                                <div class="" id="container-comentarios"
+                                    style="background-color: rgba(0, 0, 0, 0.399); border-radius: 15px;">
+                                    <!-- Review item START -->
+                                    {% for item in comentarios %}
+
+                                    <div class="d-md-flex my-4 w-100 mb-3">
+                                        <!-- Avatar -->
+                                        <div class="mt-3 ms-2 avatar avatar-lg me-3 flex-shrink-0">
+                                            <img class="avatar-img rounded-circle" loading="lazy"
+                                                src="https://turixcam-images.b-cdn.net/temporales/icon.jpg"
+                                                alt="avatar">
+                                        </div>
+                                        <!-- Text -->
+                                        <div class="w-100 mt-3 ms-2">
+                                            <div class="d-flex  justify-content-between mt-1 mt-md-0">
+                                                <div class="">
+                                                    <h6 class="me-3 mb-0">{{item.user.first_name}} </h6>
+                                                    <!-- Info -->
+                                                    <ul class="nav nav-divider small mb-2">
+                                                        <li class="nav-item">{{item.fecha}}</li>
+                                                        <li class="nav-item"></li>
+                                                    </ul>
+                                                </div>
+                                                <!-- Review star -->
+                                                <div class="icon-md rounded text-bg-warning fs-6">{{item.puntuacion}}
+                                                </div>
+                                            </div>
+
+                                            <p class="mb-2 text-light">{{item.text}}</p>
+
+
+                                        </div>
+                                    </div>
+                                    <!-- Divider -->
+                                    <hr class="mb-3">
+                                    <div class="mb-3"></div>
+                                    {% endfor %}
+                                </div>
+                                <!-- Button -->
+                                <div class="text-center">
+                                    <a href="#" class="btn btn-info mb-0">Ver más</a>
+                                </div>
+                            </div>
+                            <!-- Card body END -->
+                        </div>
+
+                    </div>
+                </div>
+                <!-- Content END -->
+
+                <!-- Right side content START -->
+                <aside class="col-xl-5 order-xl-2">
+                    <div>
+                        <div class="mb-4  ">
+
+                            <div class="card shadow rounded-3 overflow-hidden">
+                                <a class="weatherwidget-io"
+                                    href="https://forecast7.com/es/15d83n96d32/santa-maria-huatulco/"
+                                    data-label_1="SANTA MARÍA HUATULCO" data-label_2="Clima"
+                                    data-theme="weather_one">SANTA MARÍA HUATULCO Clima</a>
+                                <script>
+                                    !function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = 'https://weatherwidget.io/js/widget.min.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'weatherwidget-io-js');
+                                </script>
+                            </div>
+                        </div>
+
+
+                    </div>
+            </div>
+            </aside>
+            <!-- Right side content END -->
+        </div> <!-- Row END -->
+        </div>
+    </section>
+    <!-- =======================
+	About hotel END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script src="{% static 'login/assets/vendor/sticky-js/sticky.min.js' %}"></script>
+{% endblock %}

@@ -244,3 +244,29 @@ def apan(request):
             "puntuaciones":get_puntuaciones(lugar),
         }           
     return render(request, "camaras/apan.html", context)
+
+def oaxaca(request):
+    lugar = Lugar.objects.get(pk=4)
+    user = request.user   
+    comentarios,media =  get_all_coments(lugar)     
+    if request.user.is_authenticated:
+        context = {
+            "lugar": lugar,
+            "es_favorito": get_clase_favorito(user, lugar, Favorito),
+            "es_guardado": get_clase_guardado(user, lugar, Guardado),
+            "comentarios": comentarios,
+            "total_comentarios": comentarios.count(),
+            "media":media,
+            "puntuaciones":get_puntuaciones(lugar),
+        }
+    else:
+        context = {
+            "lugar": lugar,
+            "es_favorito": "btn-outline-danger",
+            "es_guardado": "btn-outline-warning",
+            "comentarios": comentarios,
+            "total_comentarios": comentarios.count(),
+            "media":media,
+            "puntuaciones":get_puntuaciones(lugar),
+        }           
+    return render(request, "camaras/oaxaca.html", context)
