@@ -57,7 +57,7 @@ class Idea(models.Model):
         return f'{self.usuario.username} - {self.descripcion[:30]}'
 
 class Comentario(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete = models.CASCADE, related_name='comentarios')
+    user = models.ForeignKey(CustomUser, on_delete = models.CASCADE, related_name='comentarios', null=True, blank=True)
     text = models.TextField(max_length = 10000)
     lugar = models.ForeignKey(Lugar, on_delete = models.CASCADE)
     fecha = models.DateTimeField(auto_now_add=True)

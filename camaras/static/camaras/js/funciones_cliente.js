@@ -47,71 +47,14 @@ function getCSRFToken() {
 
     return null;
 }
-document.getElementById('btn_addFavorito').addEventListener('click', function(e) {
-    e.preventDefault();
 
-    var lugar = document.getElementById('id_lugar').value;
-    const token = getCSRFToken();
-    var formData = new FormData();
-    var boton = document.getElementById('btn_addFavorito');
-    formData.append('id_lugar', lugar);
-    boton.style.animation = 'pulse 0.5s';
-    setTimeout(function() {
-        boton.style.animation = '';
-    }, 600);
-    fetch('addFavorite', { // Asegúrate de reemplazar esto con la ruta correcta a tu función Django
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': token,
-        },
-        body: formData,
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data);
-        boton.classList.remove(data.del);
-        boton.classList.add(data.add);
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
-});
-
-document.getElementById('btn_addGuardado').addEventListener('click', function(e) {
-    e.preventDefault();
-
-    var lugar = document.getElementById('id_lugar').value;
-    const token = getCSRFToken();
-    var formData = new FormData();
-    var boton = document.getElementById('btn_addGuardado');
-    formData.append('id_lugar', lugar);
-    boton.style.animation = 'pulse 0.5s';
-    setTimeout(function() {
-        boton.style.animation = '';
-    }, 600);
-    fetch('addGuardado', { // Asegúrate de reemplazar esto con la ruta correcta a tu función Django
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': token,
-        },
-        body: formData,
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data);
-        boton.classList.remove(data.del);
-        boton.classList.add(data.add);
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
-});
 
 document.getElementById('comen_btn').addEventListener('click', function(e) {
     e.preventDefault();
 
-    var lugar = document.getElementById('id_lugar').value;
+    var lugar = 1
     var text = document.getElementById('comen_text').value;
+    var inputcoment = document.getElementById('comen_text');
     var puntuacion = document.getElementById('comen_calificacion').value;
     const token = getCSRFToken();
     var formData = new FormData();
@@ -119,7 +62,7 @@ document.getElementById('comen_btn').addEventListener('click', function(e) {
     formData.append('text', text);
     formData.append('puntuacion', puntuacion);
 
-    fetch('addComentario', { // Asegúrate de reemplazar esto con la ruta correcta a tu función Django
+    fetch('addComentario', {
         method: 'POST',
         headers: {
             'X-CSRFToken': token,
@@ -129,9 +72,35 @@ document.getElementById('comen_btn').addEventListener('click', function(e) {
     .then(response => response.json())
     .then(data => {
         console.log(data);
-        // Aquí puedes agregar código para actualizar la interfaz de usuario después de agregar el comentario
+        // Crear un nuevo elemento de comentario
+        inputcoment.value = "";
+        var newComment = document.createElement('div');
+        newComment.innerHTML = `
+            <div class="d-md-flex my-4 w-100 mb-3">
+                <div class="mt-3 ms-2 avatar avatar-lg me-3 flex-shrink-0">
+                    <img class="avatar-img rounded-circle" loading="lazy" src="${data.comentario.user.avatar_url}" alt="avatar">
+                </div>
+                <div class="w-100 mt-3 ms-2">
+                    <div class="d-flex justify-content-between mt-1 mt-md-0">
+                        <div class="">
+                            <h6 class="me-3 mb-0">${data.comentario.user.first_name}</h6>
+                            <ul class="nav nav-divider small mb-2">
+                                <li class="nav-item">${data.comentario.fecha}</li>
+                            </ul>
+                        </div>
+                        <div class="icon-md rounded text-bg-warning fs-6">${data.comentario.puntuacion}</div>
+                    </div>
+                    <p class="mb-2 text-light">${data.comentario.text}</p>
+                </div>
+            </div>
+            <hr class="mb-3">
+            <div class="mb-3"></div>
+        `;
+        // Agregar el nuevo comentario al contenedor de comentarios
+        document.getElementById('container-comentarios').appendChild(newComment);
     })
     .catch((error) => {
         console.error('Error:', error);
     });
+    
 });

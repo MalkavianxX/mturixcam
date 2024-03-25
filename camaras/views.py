@@ -36,10 +36,10 @@ def get_user_icon_profile(user):
     return avatar_url  
 
 def get_all_coments(lugar):
-    comentarios = Comentario.objects.filter(lugar=lugar, status=True).order_by('-fecha')
+    comentarios = Comentario.objects.filter(lugar=lugar).order_by('-fecha')
     media = 0.0
     for iter in comentarios:
-        iter.user.avatar_url = get_user_icon_profile(iter.user)
+       
         media = media + iter.puntuacion
     if comentarios.count() > 0:
         media = media / comentarios.count()  
@@ -142,24 +142,34 @@ def addGuardado(request):
         return JsonResponse({"message": "Fallo de método, se esperaba una solicitud POST."}, status=405)
 
 
-@login_required
+
 def addComentario(request):
     if request.method == "POST":
         user = request.user
-        if user.is_authenticated:
-            lugar_id = request.POST.get("id_lugar")
-            text = request.POST.get("text")
-            puntuacion = request.POST.get("puntuacion")
-            if not text or not puntuacion:
-                return JsonResponse({"message": "El comentario y la puntuación son obligatorios."}, status=400)
-            try:
-                lugar = Lugar.objects.get(pk=lugar_id)
-            except Lugar.DoesNotExist:
-                return JsonResponse({"message": "El lugar no existe."}, status=400)
-            Comentario.objects.create(user=user, lugar=lugar, text=text, puntuacion=float(puntuacion))
-            return JsonResponse({'message': 'Comentario agregado.'}, status=200)
-        else:
-            return redirect('login')
-            return JsonResponse({"message": "El usuario no está autenticado."}, status=400)
+        lugar_id = request.POST.get("id_lugar")
+        text = request.POST.get("text")
+        puntuacion = request.POST.get("puntuacion")
+        if not text or not puntuacion:
+            return JsonResponse({"message": "El comentario y la puntuación son obligatorios."}, status=400)
+        try:
+            lugar = Lugar.objects.get(pk=lugar_id)
+        except Lugar.DoesNotExist:
+            return JsonResponse({"message": "El lugar no existe."}, status=400)
+        comentario = Comentario.objects.create( lugar=lugar, text=text, puntuacion=float(puntuacion))
+        # Devolver los datos del nuevo comentario
+        data = {
+            'message': 'Comentario agregado.',
+            'comentario': {
+                'user': {
+                    'first_name': "Anonimo",
+                    'avatar_url': "https://turixcam-images.b-cdn.net/temporales/icon.jpg",  # Asegúrate de reemplazar esto con el campo correcto para la URL del avatar
+                },
+                'fecha': comentario.fecha.strftime('%Y-%m-%d'),  # Formatear la fecha como una cadena
+                'text': comentario.text,
+                'puntuacion': comentario.puntuacion,
+            }
+        }
+        return JsonResponse(data, status=200)
+
     else:
         return JsonResponse({"message": "Fallo de método, se esperaba una solicitud POST."}, status=405)
