@@ -173,3 +173,74 @@ def addComentario(request):
 
     else:
         return JsonResponse({"message": "Fallo de método, se esperaba una solicitud POST."}, status=405)
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def teco(request):
+    lugar = Lugar.objects.get(pk=2)
+    user = request.user   
+    comentarios,media =  get_all_coments(lugar)     
+    if request.user.is_authenticated:
+        context = {
+            "lugar": lugar,
+            "es_favorito": get_clase_favorito(user, lugar, Favorito),
+            "es_guardado": get_clase_guardado(user, lugar, Guardado),
+            "comentarios": comentarios,
+            "total_comentarios": comentarios.count(),
+            "media":media,
+            "puntuaciones":get_puntuaciones(lugar),
+        }
+    else:
+        context = {
+            "lugar": lugar,
+            "es_favorito": "btn-outline-danger",
+            "es_guardado": "btn-outline-warning",
+            "comentarios": comentarios,
+            "total_comentarios": comentarios.count(),
+            "media":media,
+            "puntuaciones":get_puntuaciones(lugar),
+        }           
+    return render(request, "camaras/teco.html", context)
+
+def apan(request):
+    lugar = Lugar.objects.get(pk=3)
+    user = request.user   
+    comentarios,media =  get_all_coments(lugar)     
+    if request.user.is_authenticated:
+        context = {
+            "lugar": lugar,
+            "es_favorito": get_clase_favorito(user, lugar, Favorito),
+            "es_guardado": get_clase_guardado(user, lugar, Guardado),
+            "comentarios": comentarios,
+            "total_comentarios": comentarios.count(),
+            "media":media,
+            "puntuaciones":get_puntuaciones(lugar),
+        }
+    else:
+        context = {
+            "lugar": lugar,
+            "es_favorito": "btn-outline-danger",
+            "es_guardado": "btn-outline-warning",
+            "comentarios": comentarios,
+            "total_comentarios": comentarios.count(),
+            "media":media,
+            "puntuaciones":get_puntuaciones(lugar),
+        }           
+    return render(request, "camaras/apan.html", context)
